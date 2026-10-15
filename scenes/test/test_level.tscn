@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player_scene"]
+[ext_resource type="PackedScene" path="res://scenes/test/training_dummy.tscn" id="2_dummy_scene"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(640, 20)
@@ -79,3 +80,9 @@ color = Color(0.3, 0.35, 0.42, 1)
 
 [node name="Player" parent="." instance=ExtResource("1_player_scene")]
 position = Vector2(60, 140)
+
+[node name="TrainingDummyGround" parent="." instance=ExtResource("2_dummy_scene")]
+position = Vector2(220, 148)
+
+[node name="TrainingDummyPlatform" parent="." instance=ExtResource("2_dummy_scene")]
+position = Vector2(280, 68)
