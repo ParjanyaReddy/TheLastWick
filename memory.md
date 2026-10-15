@@ -61,7 +61,14 @@
   - **Cinderling Enemy:** State machine (`PATROL -> TELEGRAPH -> ATTACK -> RECOVER -> DEAD`), ledge and wall detection, 0.45s telegraph flash, contact attack hitbox (8 dmg), death animation
   - **Player Damage:** Health (100 HP), Hurtbox, `HURT` state with knockback, 0.8s i-frames (blinking effect), `DEAD` state
   - **HUD CanvasLayer:** Health bar (100/100 HP), Wick flame icon, death overlay with "Press R to Restart"
+- [x] **M4: Game Autoload, Mana System & Ember Bolt Spell**
+  - `Stats` class with additive and multiplicative stat modifiers
+  - `Game` autoload owning run state, HP, mana, Wax, and boons
+  - Mana mechanics: 50 max mana, 2 mana/s out-of-combat regen, +4 mana per sword strike
+  - **Ember Bolt Spell:** Cast on `K` (or RMB), costs 15 mana, launches a 320 px/s fire projectile dealing 25 damage
+  - **Burn Status Effect:** `apply_status("burn", duration, dps)` implemented on enemies and training dummy (3 dmg/s over 3s)
+  - HUD updated with animated blue Mana Bar (`50 / 50`)
 
 ## Next Milestones
-- [ ] **M3b: Second Enemy - Ash Hurler** (ledge sniper lobbing arcing coal projectiles)
-- [ ] **M4: Game Autoload, Mana & Ember Bolt Spell**
+- [ ] **M3b: Second Enemy - Ash Hurler** (ledge sniper lobbing arcing coals)
+- [ ] **M5: Chunks and Procedural Level Builder** (Room template, Entry/Exit markers, wave spawner, door locks)
