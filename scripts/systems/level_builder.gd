@@ -50,3 +50,4 @@ func build_level() -> void:
 			camera.limit_right = int(cursor_x + 60.0)
 			camera.limit_top = -250
 			camera.limit_bottom = 250
+			camera.reset_smoothing()

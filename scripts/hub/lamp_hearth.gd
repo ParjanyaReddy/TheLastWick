@@ -15,6 +15,14 @@ func _ready() -> void:
 	if Save:
 		Save.save_updated.connect(_update_ui)
 
+	var camera = player.get_node_or_null("Camera2D") as Camera2D
+	if camera:
+		camera.limit_left = 0
+		camera.limit_right = 320
+		camera.limit_top = 0
+		camera.limit_bottom = 180
+		camera.reset_smoothing()
+
 func _update_ui() -> void:
 	if Save:
 		night_label.text = "Night %d of 100" % Save.data.night
