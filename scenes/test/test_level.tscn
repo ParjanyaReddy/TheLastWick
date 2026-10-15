@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/test/training_dummy.tscn" id="2_dummy_scene"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3_hud_scene"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/cinderling.tscn" id="4_cind_scene"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/ash_hurler.tscn" id="5_hurler_scene"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(640, 20)
@@ -93,3 +94,6 @@ position = Vector2(420, 154)
 
 [node name="CinderlingPlatform" parent="." instance=ExtResource("4_cind_scene")]
 position = Vector2(400, 114)
+
+[node name="AshHurlerPlatform" parent="." instance=ExtResource("5_hurler_scene")]
+position = Vector2(280, 70)

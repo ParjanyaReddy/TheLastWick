@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/ash_hurler.gd" id="1_hurler"]
+[ext_resource type="Script" path="res://scripts/components/health.gd" id="2_health"]
+[ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="3_hurtbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(12, 18)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(14, 20)
+
+[node name="AshHurler" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_hurler")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Body" type="ColorRect" parent="Visuals"]
+offset_left = -6.0
+offset_top = -9.0
+offset_right = 6.0
+offset_bottom = 9.0
+color = Color(0.35, 0.38, 0.45, 1)
+
+[node name="Head" type="ColorRect" parent="Visuals"]
+offset_left = -4.0
+offset_top = -14.0
+offset_right = 4.0
+offset_bottom = -9.0
+color = Color(0.45, 0.5, 0.58, 1)
+
+[node name="Hand" type="ColorRect" parent="Visuals"]
+offset_left = 6.0
+offset_top = -5.0
+offset_right = 10.0
+offset_bottom = -1.0
+color = Color(1, 0.45, 0.1, 1)
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_hp = 20.0
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="WallRay" type="RayCast2D" parent="."]
+target_position = Vector2(10, 0)
+collision_mask = 1
+
+[node name="LedgeRay" type="RayCast2D" parent="."]
+position = Vector2(8, 7)
+target_position = Vector2(0, 10)
+collision_mask = 1

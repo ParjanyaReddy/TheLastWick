@@ -5,6 +5,7 @@
 - **Genre:** 2D Side-scrolling Action-Platformer Roguelite (Swordigo-style platforming + Hades-style run loop/boons)
 - **Engine:** Godot 4.7.2 (Windows, Compatibility renderer)
 - **Project Location:** `C:\Godot\TheLastWick`
+- **GitHub Repository:** `https://github.com/ParjanyaReddy/TheLastWick`
 - **Resolution:** 320x180 viewport, 1280x720 window override, nearest-neighbor filtering
 
 ## Core Mechanics & Design
@@ -31,10 +32,10 @@
 ## Completed Milestones
 - [x] **M0: Setup & Safety Net**
   - Project created in `C:\Godot\TheLastWick`
+  - GitHub repository `ParjanyaReddy/TheLastWick` connected and tracking `main`
   - Viewport & window settings configured
   - 2D Physics layers named
   - Full Input Map registered
-  - Git repository initialized and initial commit made
   - Folders established (`autoload/`, `scenes/`, `scripts/`, `data/`, `assets/`)
   - `CREDITS.md` and `later.md` created
 - [x] **M1a: Run and Jump**
@@ -55,10 +56,11 @@
   - `Juice` autoload (hit-stop 40ms, screen shake)
   - Floating damage numbers
   - Training Dummy in test level
-- [x] **M3: First Enemy & Player Damage**
+- [x] **M3: Enemies & Player Damage**
   - `Events` autoload signal bus
   - `EnemyData` Resource class
   - **Cinderling Enemy:** State machine (`PATROL -> TELEGRAPH -> ATTACK -> RECOVER -> DEAD`), ledge and wall detection, 0.45s telegraph flash, contact attack hitbox (8 dmg), death animation
+  - **Ash Hurler Enemy:** Ledge sniper enemy, 0.60s bright yellow hand spark telegraph, lobs arcing **Ash Coal** projectiles (10 dmg) targeted at player's position with gravity trajectory (0.7s flight time)
   - **Player Damage:** Health (100 HP), Hurtbox, `HURT` state with knockback, 0.8s i-frames (blinking effect), `DEAD` state
   - **HUD CanvasLayer:** Health bar (100/100 HP), Wick flame icon, death overlay with "Press R to Restart"
 - [x] **M4: Game Autoload, Mana System & Ember Bolt Spell**
@@ -70,5 +72,5 @@
   - HUD updated with animated blue Mana Bar (`50 / 50`)
 
 ## Next Milestones
-- [ ] **M3b: Second Enemy - Ash Hurler** (ledge sniper lobbing arcing coals)
 - [ ] **M5: Chunks and Procedural Level Builder** (Room template, Entry/Exit markers, wave spawner, door locks)
+- [ ] **M6: Run Loop & Meta Progression** (Hub, Death transition, Soot currency, Fork chunks with reward previews)
