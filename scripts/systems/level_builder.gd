@@ -40,3 +40,11 @@ func build_level() -> void:
 		player_instance = PLAYER_SCENE.instantiate() as CharacterBody2D
 		add_child(player_instance)
 		player_instance.global_position = entry_marker.global_position + Vector2(20.0, -10.0)
+
+		# Set camera limits to encompass the entire stitched level!
+		var camera = player_instance.get_node_or_null("Camera2D") as Camera2D
+		if camera:
+			camera.limit_left = -20
+			camera.limit_right = int(cursor_x + 60.0)
+			camera.limit_top = -250
+			camera.limit_bottom = 250
