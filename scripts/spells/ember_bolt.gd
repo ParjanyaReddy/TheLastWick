@@ -10,6 +10,11 @@ var life_time: float = 2.5
 @onready var sprite: ColorRect = $Visuals/Core
 @onready var glow: ColorRect = $Visuals/Glow
 
+var burn_bonus_mult: float = 1.0
+
+func set_burn_bonus_multiplier(mult: float) -> void:
+	burn_bonus_mult = mult
+
 func setup(dir: float, dmg: float = 25.0) -> void:
 	direction = dir
 	damage = dmg
@@ -34,11 +39,14 @@ func _on_body_entered(_body: Node2D) -> void:
 	# Collided with world geometry (walls/floors)
 	_explode()
 
-func _on_hit_registered(target: Hurtbox, _hit: HitData) -> void:
-	# Apply Burn status effect to target enemy if supported
+func _on_hit_registered(target: Hurtbox, hit: HitData) -> void:
 	var enemy = target.owner
-	if enemy and enemy.has_method("apply_status"):
-		enemy.apply_status(&"burn", 3.0, 3.0) # 3 seconds, 3 dmg/s
+	if enemy:
+		if enemy.has_method("apply_status"):
+			enemy.apply_status(&"burn", 3.0, 3.0) # 3 seconds, 3 dmg/s
+		# Forge Heart bonus: deal extra damage if enemy was already burning
+		if burn_bonus_mult > 1.0 and "status_effects" in enemy and enemy.status_effects.has(&"burn"):
+			hit.damage *= burn_bonus_mult
 	_explode()
 
 func _explode() -> void:

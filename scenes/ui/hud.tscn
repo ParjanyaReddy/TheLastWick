@@ -84,6 +84,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "50 / 50"
 
+[node name="BoonsRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
 [node name="DeathOverlay" type="Control" parent="."]
 visible = false
 layout_mode = 3

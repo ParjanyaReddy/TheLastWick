@@ -104,16 +104,17 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _process_normal(delta: float) -> void:
+	var cur_speed := Game.stats.get_value(&"move_speed")
 	var dir := Input.get_axis("move_left", "move_right")
 	if dir != 0.0:
 		facing_dir = sign(dir)
 		if is_on_floor():
-			velocity.x = move_toward(velocity.x, dir * SPEED, ACCEL * delta)
+			velocity.x = move_toward(velocity.x, dir * cur_speed, ACCEL * delta)
 		else:
-			if is_long_jumping and sign(velocity.x) == dir and abs(velocity.x) > SPEED:
-				velocity.x = move_toward(velocity.x, dir * SPEED, 200.0 * delta)
+			if is_long_jumping and sign(velocity.x) == dir and abs(velocity.x) > cur_speed:
+				velocity.x = move_toward(velocity.x, dir * cur_speed, 200.0 * delta)
 			else:
-				velocity.x = move_toward(velocity.x, dir * SPEED, AIR_ACCEL * delta)
+				velocity.x = move_toward(velocity.x, dir * cur_speed, AIR_ACCEL * delta)
 	else:
 		var f := FRICTION if is_on_floor() else 350.0
 		velocity.x = move_toward(velocity.x, 0.0, f * delta)
@@ -166,6 +167,8 @@ func _start_dash(input_dir: float) -> void:
 	is_invulnerable = true
 	if body_color:
 		body_color.color = Color(1.0, 0.85, 0.4, 1.0)
+	
+	Game.broadcast_dash(self)
 
 func _process_dash(delta: float) -> void:
 	dash_timer -= delta
@@ -248,6 +251,7 @@ func _start_attack() -> void:
 		_setup_sword_hitbox(Vector2(facing_dir * 14, 0), Vector2(22, 16), Vector2(3 if facing_dir > 0 else -25, -8))
 
 	attack_timer = attack_duration
+	Game.broadcast_attack(self, hit)
 	sword_hitbox.start_attack(hit)
 	sword_visual.visible = true
 
@@ -284,9 +288,10 @@ func _end_attack() -> void:
 	sword_hitbox.end_attack()
 	sword_visual.visible = false
 
-func _on_sword_hit_registered(_target: Hurtbox, hit: HitData) -> void:
+func _on_sword_hit_registered(target: Hurtbox, hit: HitData) -> void:
 	# Sword hits restore +4 mana!
 	Game.on_sword_hit_connected()
+	Game.broadcast_hit_landed(self, target.owner if target else null, hit)
 
 	if current_attack_type == AttackType.DOWN_STRIKE:
 		velocity.y = JUMP_VELOCITY * 0.95
@@ -302,6 +307,7 @@ func _cast_spell() -> void:
 		get_parent().add_child(bolt)
 		bolt.global_position = global_position + Vector2(facing_dir * 12.0, 0.0)
 		bolt.setup(facing_dir, 25.0)
+		Game.broadcast_spell_cast(self, bolt)
 
 		# Small recoil and spark feel
 		velocity.x = -facing_dir * 50.0
@@ -320,6 +326,8 @@ func _on_hurt_received(hit: HitData) -> void:
 	hurt_timer = 0.15
 	iframe_timer = 0.80
 	is_invulnerable = true
+
+	hit.damage = Game.broadcast_damage_taken(self, hit.damage)
 
 	# Explicitly deduct HP from Health component
 	if health:

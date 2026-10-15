@@ -86,9 +86,19 @@ func _finish_combat() -> void:
 	cleared.emit()
 	_spawn_rewards()
 
+const BOON_PICKUP_SCENE = preload("res://scenes/pickups/boon_pickup.tscn")
+
 func _spawn_rewards() -> void:
 	if reward_spawn:
-		var reward = HEART_PICKUP_SCENE.instantiate() if randf() < 0.35 else WAX_PICKUP_SCENE.instantiate()
+		var reward_scene: PackedScene
+		if Game.chunks_cleared <= 1 or randf() < 0.45:
+			reward_scene = BOON_PICKUP_SCENE
+		elif randf() < 0.35:
+			reward_scene = HEART_PICKUP_SCENE
+		else:
+			reward_scene = WAX_PICKUP_SCENE
+
+		var reward = reward_scene.instantiate()
 		get_parent().add_child(reward)
 		reward.global_position = reward_spawn.global_position
 

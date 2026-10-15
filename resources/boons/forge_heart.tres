@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Boon" format=3]
+
+[ext_resource type="Script" path="res://scripts/boons/effects/forge_heart_effect.gd" id="1_effect"]
+[ext_resource type="Script" path="res://scripts/resources/boon.gd" id="2_boon"]
+
+[resource]
+script = ExtResource("2_boon")
+id = &"forge_heart"
+display_name = "Forge Heart"
+spirit = &"bram"
+slot = 1
+description = "Spells deal {v} increased damage, and strike burning enemies for double."
+base_value = 0.40
+effect_script = ExtResource("1_effect")

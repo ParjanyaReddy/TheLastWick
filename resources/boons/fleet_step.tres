@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Boon" format=3]
+
+[ext_resource type="Script" path="res://scripts/boons/effects/fleet_step_effect.gd" id="1_effect"]
+[ext_resource type="Script" path="res://scripts/resources/boon.gd" id="2_boon"]
+
+[resource]
+script = ExtResource("2_boon")
+id = &"fleet_step"
+display_name = "Fleet Step"
+spirit = &"kesa"
+slot = 2
+description = "Dashing unleashes a slicing gust of wind dealing {v} damage to nearby foes."
+base_value = 12.0
+effect_script = ExtResource("1_effect")

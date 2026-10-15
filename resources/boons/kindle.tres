@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="Boon" format=3]
+
+[ext_resource type="Script" path="res://scripts/boons/effects/kindle_effect.gd" id="1_effect"]
+[ext_resource type="Script" path="res://scripts/resources/boon.gd" id="2_boon"]
+
+[resource]
+script = ExtResource("2_boon")
+id = &"kindle"
+display_name = "Kindle"
+spirit = &"bram"
+slot = 0
+description = "Sword strikes ignite enemies with Burn, dealing {v} damage per second for 3s."
+base_value = 3.0
+effect_script = ExtResource("1_effect")
