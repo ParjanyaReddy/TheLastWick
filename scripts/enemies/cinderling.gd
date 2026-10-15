@@ -34,12 +34,8 @@ func _ready() -> void:
 	health.damaged.connect(_on_damaged)
 	health.died.connect(_on_died)
 
-	# Configure contact attack hitbox
-	var hit := HitData.new()
-	hit.damage = contact_damage
-	hit.source = &"enemy"
-	hit.attacker = self
-	hitbox.start_attack(hit)
+	# Hitbox is activated dynamically on each charge attack
+	hitbox.set_active(false)
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -104,6 +100,13 @@ func _start_attack() -> void:
 		velocity.y = -120.0
 	velocity.x = patrol_dir * CHARGE_SPEED
 
+	# Activate hitbox fresh for this attack!
+	var hit := HitData.new()
+	hit.damage = contact_damage
+	hit.source = &"enemy"
+	hit.attacker = self
+	hitbox.start_attack(hit)
+
 func _process_attack(delta: float) -> void:
 	state_timer -= delta
 	if wall_ray.is_colliding():
@@ -118,6 +121,7 @@ func _start_recover() -> void:
 	state_timer = 0.35
 	sprite.color = default_color
 	spark.color = Color(1.0, 0.85, 0.3, 1.0)
+	hitbox.end_attack()
 
 func _process_recover(delta: float) -> void:
 	state_timer -= delta

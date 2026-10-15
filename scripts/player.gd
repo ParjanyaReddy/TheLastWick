@@ -298,6 +298,10 @@ func _on_hurt_received(hit: HitData) -> void:
 	iframe_timer = 0.80
 	is_invulnerable = true
 
+	# Explicitly deduct HP from Health component
+	if health:
+		health.take_damage(hit)
+
 	Juice.hit_stop(0.06)
 	Juice.screen_shake(4.5)
 	Events.player_damaged.emit(hit.damage)

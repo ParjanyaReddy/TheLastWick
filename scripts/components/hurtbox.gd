@@ -6,5 +6,6 @@ signal hit_received(hit: HitData)
 
 func receive_hit(hit: HitData) -> void:
 	hit_received.emit(hit)
-	if health:
+	# Auto-deduct health only if owner does not handle hurt state itself
+	if health and not owner.has_method("_on_hurt_received"):
 		health.take_damage(hit)

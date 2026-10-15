@@ -10,7 +10,9 @@ func _ready() -> void:
 	death_overlay.visible = false
 	Events.player_damaged.connect(_on_player_damaged)
 	Events.player_died.connect(_on_player_died)
+	call_deferred("_bind_player")
 
+func _bind_player() -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player_health = player.get_node_or_null("Health") as Health
@@ -20,6 +22,8 @@ func _ready() -> void:
 			_update_hp_display(0, null)
 
 func _update_hp_display(_amount: float, _hit: HitData) -> void:
+	if not player_health:
+		_bind_player()
 	if player_health:
 		hp_bar.max_value = player_health.max_hp
 		hp_bar.value = player_health.hp
