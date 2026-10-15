@@ -1,0 +1,115 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/chunk.gd" id="1_chunk"]
+[ext_resource type="PackedScene" path="res://scenes/pickups/wax_pickup.tscn" id="2_wax_scene"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_det"]
+size = Vector2(20, 140)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_l"]
+size = Vector2(140, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor_r"]
+size = Vector2(140, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stone"]
+size = Vector2(40, 8)
+
+[node name="ChunkPlatforming1" type="Node2D"]
+script = ExtResource("1_chunk")
+
+[node name="Entry" type="Marker2D" parent="."]
+position = Vector2(0, 140)
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(400, 140)
+
+[node name="Bounds" type="Node2D" parent="."]
+
+[node name="TopLeft" type="Marker2D" parent="Bounds"]
+position = Vector2(0, -40)
+
+[node name="BottomRight" type="Marker2D" parent="Bounds"]
+position = Vector2(400, 180)
+
+[node name="PlayerDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetector"]
+position = Vector2(25, 90)
+shape = SubResource("RectangleShape2D_det")
+
+[node name="FloorLeft" type="StaticBody2D" parent="."]
+position = Vector2(70, 150)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorLeft"]
+shape = SubResource("RectangleShape2D_floor_l")
+
+[node name="ColorRect" type="ColorRect" parent="FloorLeft"]
+offset_left = -70.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 10.0
+color = Color(0.2, 0.22, 0.26, 1)
+
+[node name="SteppingStone1" type="StaticBody2D" parent="."]
+position = Vector2(175, 115)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SteppingStone1"]
+shape = SubResource("RectangleShape2D_stone")
+
+[node name="ColorRect" type="ColorRect" parent="SteppingStone1"]
+offset_left = -20.0
+offset_top = -4.0
+offset_right = 20.0
+offset_bottom = 4.0
+color = Color(0.3, 0.34, 0.4, 1)
+
+[node name="SteppingStone2" type="StaticBody2D" parent="."]
+position = Vector2(225, 85)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SteppingStone2"]
+shape = SubResource("RectangleShape2D_stone")
+
+[node name="ColorRect" type="ColorRect" parent="SteppingStone2"]
+offset_left = -20.0
+offset_top = -4.0
+offset_right = 20.0
+offset_bottom = 4.0
+color = Color(0.3, 0.34, 0.4, 1)
+
+[node name="FloorRight" type="StaticBody2D" parent="."]
+position = Vector2(330, 150)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorRight"]
+shape = SubResource("RectangleShape2D_floor_r")
+
+[node name="ColorRect" type="ColorRect" parent="FloorRight"]
+offset_left = -70.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 10.0
+color = Color(0.2, 0.22, 0.26, 1)
+
+[node name="LockedGate" type="StaticBody2D" parent="."]
+visible = false
+
+[node name="RewardSpawn" type="Marker2D" parent="."]
+
+[node name="WaxPickup" parent="." instance=ExtResource("2_wax_scene")]
+position = Vector2(225, 65)
+
+[node name="Waves" type="Node2D" parent="."]
+
+[node name="Wave1" type="Node2D" parent="Waves"]
+
+[node name="Wave2" type="Node2D" parent="Waves"]

@@ -70,7 +70,16 @@
   - **Ember Bolt Spell:** Cast on `K` (or RMB), costs 15 mana, launches a 320 px/s fire projectile dealing 25 damage
   - **Burn Status Effect:** `apply_status("burn", duration, dps)` implemented on enemies and training dummy (3 dmg/s over 3s)
   - HUD updated with animated blue Mana Bar (`50 / 50`)
+- [x] **M5: Chunks and Procedural Level Builder**
+  - **Chunk Architecture (`chunk.gd`):** Entry & Exit markers at consistent floor height (y=140), dynamic camera bounds detection, wave spawn markers, locked combat gate, reward spawn
+  - **Pickups:** `WaxPickup` (+10 Wax with floating bob) & `HeartWickPickup` (+30 HP heal)
+  - **Handmade Depth 1 Chunks:**
+    - `chunk_intro.tscn`: Safe introductory descent
+    - `chunk_combat_1.tscn`: Multi-wave rooftop arena (Wave 1: Cinderlings, Wave 2: Cinderling + Ash Hurler), locked barrier gate, reward drop
+    - `chunk_platforming_1.tscn`: Pit gap crossing with stepping stones and elevated Wax pickup
+  - **LevelBuilder (`level_builder.gd`):** Seamlessly stitches chunks left-to-right by aligning Entry/Exit markers and spawns the player and HUD
+  - `project.godot` updated with `run/main_scene` pointing to `level_builder.tscn`
 
 ## Next Milestones
-- [ ] **M5: Chunks and Procedural Level Builder** (Room template, Entry/Exit markers, wave spawner, door locks)
-- [ ] **M6: Run Loop & Meta Progression** (Hub, Death transition, Soot currency, Fork chunks with reward previews)
+- [ ] **M6: Run Loop & Meta Progression** (Main Menu, Lamp Hearth Hub, Death return transition, Fork chunks with reward preview icons, Soot meta-currency)
+- [ ] **M7: Boons System** (Lamp Spirits: Bram, Kesa, Orru, Vey; 3-card selection UI, boon equip hooks)
