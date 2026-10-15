@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-enum State { NORMAL, DASH, ATTACK }
+enum State { NORMAL, DASH, ATTACK, HURT, DEAD }
 enum AttackType { SLASH_1, SLASH_2, SLASH_3, UP_SLASH, DOWN_STRIKE, AIR_SLASH }
 
 # Movement constants
@@ -40,6 +40,10 @@ var dash_started_on_ground := false
 var is_long_jumping := false
 var is_invulnerable := false
 
+# Hurt / I-frames
+var hurt_timer := 0.0
+var iframe_timer := 0.0
+
 # Attack variables
 var current_attack_type: AttackType = AttackType.SLASH_1
 var combo_step := 0
@@ -49,6 +53,8 @@ var attack_timer := 0.0
 var attack_can_cancel := false
 
 @onready var body_color: ColorRect = $BodyColor
+@onready var health: Health = $Health
+@onready var hurtbox: Hurtbox = $Hurtbox
 @onready var sword_hitbox: Hitbox = $SwordHitbox
 @onready var sword_shape: CollisionShape2D = $SwordHitbox/CollisionShape2D
 @onready var sword_visual: ColorRect = $SwordHitbox/SwordVisual
@@ -57,6 +63,10 @@ func _ready() -> void:
 	add_to_group("player")
 	if sword_hitbox:
 		sword_hitbox.hit_registered.connect(_on_sword_hit_registered)
+	if hurtbox:
+		hurtbox.hit_received.connect(_on_hurt_received)
+	if health:
+		health.died.connect(_on_died)
 
 func _physics_process(delta: float) -> void:
 	# Timers countdown
@@ -66,6 +76,13 @@ func _physics_process(delta: float) -> void:
 	combo_timer = max(combo_timer - delta, 0.0)
 	if combo_timer <= 0.0:
 		combo_step = 0
+
+	# I-frames countdown
+	if iframe_timer > 0.0:
+		iframe_timer = max(iframe_timer - delta, 0.0)
+		if iframe_timer <= 0.0 and current_state != State.DASH:
+			is_invulnerable = false
+			modulate.a = 1.0
 
 	# Global jump buffer
 	if Input.is_action_just_pressed("jump"):
@@ -78,6 +95,10 @@ func _physics_process(delta: float) -> void:
 			_process_dash(delta)
 		State.ATTACK:
 			_process_attack(delta)
+		State.HURT:
+			_process_hurt(delta)
+		State.DEAD:
+			velocity = Vector2.ZERO
 
 	move_and_slide()
 
@@ -157,14 +178,16 @@ func _process_dash(delta: float) -> void:
 		return
 
 	if dash_timer <= (DASH_DURATION - DASH_IFRAMES):
-		is_invulnerable = false
+		if iframe_timer <= 0.0:
+			is_invulnerable = false
 
 	if dash_timer <= 0.0:
 		_end_dash()
 
 func _end_dash() -> void:
 	current_state = State.NORMAL
-	is_invulnerable = false
+	if iframe_timer <= 0.0:
+		is_invulnerable = false
 	if body_color:
 		body_color.color = Color(0.85, 0.42, 0.18, 1.0)
 	if not is_long_jumping:
@@ -235,13 +258,12 @@ func _setup_sword_hitbox(shape_pos: Vector2, shape_size: Vector2, visual_pos: Ve
 func _process_attack(delta: float) -> void:
 	attack_timer -= delta
 
-	# Apply gentle gravity if in air during attack
 	if not is_on_floor():
 		velocity.y = min(velocity.y + GRAVITY * delta, MAX_FALL)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, FRICTION * delta)
 
-	# Dash-cancel: Press Dash anytime during an attack to cancel the swing and dash immediately!
+	# Dash-cancel
 	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
 		if is_on_floor() or can_air_dash:
 			_end_attack()
@@ -258,7 +280,50 @@ func _end_attack() -> void:
 	sword_visual.visible = false
 
 func _on_sword_hit_registered(_target: Hurtbox, hit: HitData) -> void:
-	# Down-strike bounce mechanic:
 	if current_attack_type == AttackType.DOWN_STRIKE:
 		velocity.y = JUMP_VELOCITY * 0.95
-		can_air_dash = true # Down-strike hit refreshes air dash!
+		can_air_dash = true
+
+# ==================== DAMAGE & HEALTH ====================
+
+func _on_hurt_received(hit: HitData) -> void:
+	if is_invulnerable or current_state == State.DEAD:
+		return
+
+	if current_state == State.ATTACK:
+		_end_attack()
+
+	current_state = State.HURT
+	hurt_timer = 0.15
+	iframe_timer = 0.80
+	is_invulnerable = true
+
+	Juice.hit_stop(0.06)
+	Juice.screen_shake(4.5)
+	Events.player_damaged.emit(hit.damage)
+
+	# Knockback away from attacker
+	var knock_dir := 1.0 if (hit.attacker and hit.attacker.global_position.x < global_position.x) else -1.0
+	velocity.x = knock_dir * 140.0
+	velocity.y = -90.0
+
+	_play_hurt_blink()
+
+func _process_hurt(delta: float) -> void:
+	hurt_timer -= delta
+	velocity.x = move_toward(velocity.x, 0.0, FRICTION * delta)
+	if not is_on_floor():
+		velocity.y += GRAVITY * delta
+	if hurt_timer <= 0.0:
+		current_state = State.NORMAL
+
+func _play_hurt_blink() -> void:
+	var tween = create_tween()
+	for i in range(4):
+		tween.tween_property(self, "modulate:a", 0.3, 0.10)
+		tween.tween_property(self, "modulate:a", 1.0, 0.10)
+
+func _on_died() -> void:
+	current_state = State.DEAD
+	velocity = Vector2.ZERO
+	Events.player_died.emit()

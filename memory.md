@@ -42,11 +42,26 @@
   - `res://scenes/player/player.tscn` created (CharacterBody2D, Camera2D, 10x20 shape)
   - `res://scenes/test/test_level.tscn` created with floor and 3 platforms
 - [x] **M1b: Dash & Dash-Jump (Long Jump)**
-  - State machine: `State { NORMAL, DASH }`
+  - State machine: `State { NORMAL, DASH, ATTACK, HURT, DEAD }`
   - Dash speed: 300 px/s, duration 0.16s, cooldown 0.40s, i-frames 0.12s
-  - Ground dash can be cancelled into a boosted long jump (`LONG_JUMP_SPEED = 270.0`) anytime during the dash
-  - Air glide physics preserves horizontal momentum in the air instead of aggressively braking to base speed
+  - Fixed air dash distance to ~48px (no excessive drift)
+  - Long jump from ground carries boosted momentum (`LONG_JUMP_SPEED = 270.0`)
+  - Dash-cancel allows immediate interrupt from attack swings
+- [x] **M2: Components and Combat Core**
+  - `HitData`, `Health`, `Hitbox`, `Hurtbox`
+  - 3-hit ground combo (15/15/25 dmg with knockback)
+  - Up-slash (15 dmg)
+  - Down-strike bounce ("pogo jump", 15 dmg, bounces high and resets air-dash)
+  - `Juice` autoload (hit-stop 40ms, screen shake)
+  - Floating damage numbers
+  - Training Dummy in test level
+- [x] **M3: First Enemy & Player Damage**
+  - `Events` autoload signal bus
+  - `EnemyData` Resource class
+  - **Cinderling Enemy:** State machine (`PATROL -> TELEGRAPH -> ATTACK -> RECOVER -> DEAD`), ledge and wall detection, 0.45s telegraph flash, contact attack hitbox (8 dmg), death animation
+  - **Player Damage:** Health (100 HP), Hurtbox, `HURT` state with knockback, 0.8s i-frames (blinking effect), `DEAD` state
+  - **HUD CanvasLayer:** Health bar (100/100 HP), Wick flame icon, death overlay with "Press R to Restart"
 
 ## Next Milestones
-- [ ] **M1c: Tilemap and Camera** (TileMapLayer, collision, camera limits)
-- [ ] **M2: Components and Combat Core** (Health, Hitbox, Hurtbox, HitData, 3-hit sword combo, up/down strike, bounce, Juice hit-stop/shake)
+- [ ] **M3b: Second Enemy - Ash Hurler** (ledge sniper lobbing arcing coal projectiles)
+- [ ] **M4: Game Autoload, Mana & Ember Bolt Spell**
