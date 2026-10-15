@@ -5,11 +5,14 @@ extends CanvasLayer
 @onready var mana_bar: ProgressBar = $MarginContainer/VBoxContainer/ManaRow/ManaBar
 @onready var mana_label: Label = $MarginContainer/VBoxContainer/ManaRow/ManaLabel
 @onready var death_overlay: Control = $DeathOverlay
+@onready var stats_summary_label: Label = $DeathOverlay/VBoxContainer/StatsSummary
 
 var player_health: Health = null
+var run_ended: bool = false
 
 func _ready() -> void:
 	death_overlay.visible = false
+	run_ended = false
 	Events.player_damaged.connect(_on_player_damaged)
 	Events.player_died.connect(_on_player_died)
 	Game.mana_changed.connect(_on_mana_changed)
@@ -48,9 +51,25 @@ func _on_player_damaged(_amount: float) -> void:
 	_update_hp_display(0, null)
 
 func _on_player_died() -> void:
+	if run_ended:
+		return
+	run_ended = true
+	var summary := Game.end_run(false, "The Gloom")
+	
+	if stats_summary_label:
+		stats_summary_label.text = "Night %d Ended | Rooms Cleared: %d\nSoot Gathered: +%d  (Total Soot: %d)" % [
+			summary.night,
+			summary.chunks_cleared,
+			summary.soot_earned,
+			summary.total_soot
+		]
+	
 	death_overlay.visible = true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if death_overlay.visible and event is InputEventKey and event.pressed:
-		if event.keycode == KEY_R:
+		if event.keycode == KEY_SPACE or event.keycode == KEY_ENTER:
+			get_tree().change_scene_to_file("res://scenes/hub/lamp_hearth.tscn")
+		elif event.keycode == KEY_R:
+			Game.start_run()
 			get_tree().reload_current_scene()

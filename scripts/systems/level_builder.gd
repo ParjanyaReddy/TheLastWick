@@ -4,6 +4,8 @@ class_name LevelBuilder extends Node2D
 	preload("res://scenes/chunks/depth1/chunk_intro.tscn"),
 	preload("res://scenes/chunks/depth1/chunk_combat_1.tscn"),
 	preload("res://scenes/chunks/depth1/chunk_platforming_1.tscn"),
+	preload("res://scenes/chunks/depth1/chunk_fork_1.tscn"),
+	preload("res://scenes/chunks/depth1/chunk_shrine_1.tscn"),
 	preload("res://scenes/chunks/depth1/chunk_combat_1.tscn")
 ]
 

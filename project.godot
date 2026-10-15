@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="The Last Wick"
-run/main_scene="res://scenes/systems/level_builder.tscn"
+run/main_scene="res://scenes/hub/lamp_hearth.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [autoload]
 
 Events="*res://autoload/events.gd"
+Save="*res://autoload/save_manager.gd"
 Game="*res://autoload/game.gd"
 Juice="*res://autoload/juice.gd"
 

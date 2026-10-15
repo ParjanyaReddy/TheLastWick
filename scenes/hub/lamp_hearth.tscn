@@ -1,0 +1,208 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hub/lamp_hearth.gd" id="1_hearth"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(400, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(20, 200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(32, 40)
+
+[node name="LampHearth" type="Node2D"]
+script = ExtResource("1_hearth")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 360.0
+offset_bottom = 200.0
+color = Color(0.08, 0.08, 0.11, 1)
+
+[node name="HearthGlow" type="ColorRect" parent="."]
+offset_left = 30.0
+offset_top = 80.0
+offset_right = 80.0
+offset_bottom = 140.0
+color = Color(0.9, 0.45, 0.15, 0.2)
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(160, 150)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="FloorVisual" type="ColorRect" parent="Floor"]
+offset_left = -200.0
+offset_top = -10.0
+offset_right = 200.0
+offset_bottom = 10.0
+color = Color(0.18, 0.18, 0.22, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(-10, 80)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(330, 80)
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="HearthWall" type="Area2D" parent="."]
+position = Vector2(55, 120)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HearthWall"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="HearthStructure" type="ColorRect" parent="HearthWall"]
+offset_left = -16.0
+offset_top = -20.0
+offset_right = 16.0
+offset_bottom = 20.0
+color = Color(0.35, 0.2, 0.15, 1)
+
+[node name="EmberCore" type="ColorRect" parent="HearthWall"]
+offset_left = -8.0
+offset_top = 0.0
+offset_right = 8.0
+offset_bottom = 16.0
+color = Color(1, 0.6, 0.2, 1)
+
+[node name="HearthLabel" type="Label" parent="HearthWall"]
+offset_left = -30.0
+offset_top = -32.0
+offset_right = 30.0
+offset_bottom = -20.0
+theme_override_colors/font_color = Color(0.9, 0.65, 0.3, 1)
+theme_override_font_sizes/font_size = 8
+text = "Hearth Wall"
+horizontal_alignment = 1
+
+[node name="PellPerch" type="Area2D" parent="."]
+position = Vector2(145, 125)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PellPerch"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="PellVisual" type="ColorRect" parent="PellPerch"]
+offset_left = -6.0
+offset_top = -14.0
+offset_right = 6.0
+offset_bottom = 15.0
+color = Color(0.45, 0.6, 0.65, 1)
+
+[node name="PellEye" type="ColorRect" parent="PellPerch"]
+offset_left = 1.0
+offset_top = -10.0
+offset_right = 4.0
+offset_bottom = -7.0
+color = Color(1, 0.9, 0.4, 1)
+
+[node name="PellLabel" type="Label" parent="PellPerch"]
+offset_left = -20.0
+offset_top = -26.0
+offset_right = 20.0
+offset_bottom = -14.0
+theme_override_colors/font_color = Color(0.6, 0.8, 0.85, 1)
+theme_override_font_sizes/font_size = 8
+text = "Pell"
+horizontal_alignment = 1
+
+[node name="DescentWell" type="Area2D" parent="."]
+position = Vector2(265, 125)
+collision_layer = 64
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DescentWell"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="WellRim" type="ColorRect" parent="DescentWell"]
+offset_left = -16.0
+offset_top = -6.0
+offset_right = 16.0
+offset_bottom = 15.0
+color = Color(0.2, 0.22, 0.28, 1)
+
+[node name="WellVoid" type="ColorRect" parent="DescentWell"]
+offset_left = -10.0
+offset_top = 0.0
+offset_right = 10.0
+offset_bottom = 15.0
+color = Color(0.02, 0.02, 0.04, 1)
+
+[node name="WellLabel" type="Label" parent="DescentWell"]
+offset_left = -35.0
+offset_top = -22.0
+offset_right = 35.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(0.7, 0.4, 0.9, 1)
+theme_override_font_sizes/font_size = 8
+text = "Gloom Well"
+horizontal_alignment = 1
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(90, 130)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 312.0
+offset_bottom = 20.0
+
+[node name="NightLabel" type="Label" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_font_sizes/font_size = 9
+text = "Night 1 of 100"
+
+[node name="Spacer" type="Control" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SootLabel" type="Label" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 9
+text = "Soot: 0"
+
+[node name="InteractionPrompt" type="Label" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -24.0
+offset_right = 140.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 8
+text = "[E] Interact"
+horizontal_alignment = 1
+
+[connection signal="body_entered" from="HearthWall" to="." method="_on_hearth_body_entered"]
+[connection signal="body_exited" from="HearthWall" to="." method="_on_hearth_body_exited"]
+[connection signal="body_entered" from="PellPerch" to="." method="_on_pell_body_entered"]
+[connection signal="body_exited" from="PellPerch" to="." method="_on_pell_body_exited"]
+[connection signal="body_entered" from="DescentWell" to="." method="_on_well_body_entered"]
+[connection signal="body_exited" from="DescentWell" to="." method="_on_well_body_exited"]
