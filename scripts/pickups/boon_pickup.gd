@@ -44,6 +44,5 @@ func _claim_boon() -> void:
 	ui.open(Game.generate_boon_choices(3))
 
 	ui.choice_made.connect(func(_b, _r):
-		ui.queue_free()
 		queue_free()
 	)
