@@ -1,7 +1,9 @@
 extends CanvasLayer
 
-@onready var hp_bar: ProgressBar = $MarginContainer/VBoxContainer/HBoxContainer/HPBar
-@onready var hp_label: Label = $MarginContainer/VBoxContainer/HBoxContainer/HPLabel
+@onready var hp_bar: ProgressBar = $MarginContainer/VBoxContainer/HPRow/HPBar
+@onready var hp_label: Label = $MarginContainer/VBoxContainer/HPRow/HPLabel
+@onready var mana_bar: ProgressBar = $MarginContainer/VBoxContainer/ManaRow/ManaBar
+@onready var mana_label: Label = $MarginContainer/VBoxContainer/ManaRow/ManaLabel
 @onready var death_overlay: Control = $DeathOverlay
 
 var player_health: Health = null
@@ -10,7 +12,10 @@ func _ready() -> void:
 	death_overlay.visible = false
 	Events.player_damaged.connect(_on_player_damaged)
 	Events.player_died.connect(_on_player_died)
+	Game.mana_changed.connect(_on_mana_changed)
+
 	call_deferred("_bind_player")
+	_update_mana_display(Game.mana, Game.max_mana)
 
 func _bind_player() -> void:
 	var player = get_tree().get_first_node_in_group("player")
@@ -28,6 +33,16 @@ func _update_hp_display(_amount: float, _hit: HitData) -> void:
 		hp_bar.max_value = player_health.max_hp
 		hp_bar.value = player_health.hp
 		hp_label.text = "%d / %d" % [int(player_health.hp), int(player_health.max_hp)]
+
+func _on_mana_changed(current: float, max_val: float) -> void:
+	_update_mana_display(current, max_val)
+
+func _update_mana_display(current: float, max_val: float) -> void:
+	if mana_bar:
+		mana_bar.max_value = max_val
+		mana_bar.value = current
+	if mana_label:
+		mana_label.text = "%d / %d" % [int(current), int(max_val)]
 
 func _on_player_damaged(_amount: float) -> void:
 	_update_hp_display(0, null)

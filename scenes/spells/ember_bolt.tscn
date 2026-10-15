@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/spells/ember_bolt.gd" id="1_bolt"]
+[ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="2_hitbox"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_world"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 6.0
+
+[node name="EmberBolt" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_bolt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_world")
+
+[node name="Visuals" type="Node2D" parent="."]
+
+[node name="Glow" type="ColorRect" parent="Visuals"]
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+color = Color(1, 0.35, 0.1, 0.8)
+
+[node name="Core" type="ColorRect" parent="Visuals"]
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+color = Color(1, 0.95, 0.5, 1)
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 4
+script = ExtResource("2_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_hit")

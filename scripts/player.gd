@@ -25,6 +25,7 @@ const LONG_JUMP_SPEED := 270.0
 
 # Combat constants
 const COMBO_RESET_TIME := 0.38
+const EMBER_BOLT_SCENE = preload("res://scenes/spells/ember_bolt.tscn")
 
 # State variables
 var current_state: State = State.NORMAL
@@ -144,6 +145,10 @@ func _process_normal(delta: float) -> void:
 	# Attack trigger
 	if Input.is_action_just_pressed("attack"):
 		_start_attack()
+
+	# Spell trigger (K / RMB)
+	if Input.is_action_just_pressed("spell"):
+		_cast_spell()
 
 func _start_dash(input_dir: float) -> void:
 	current_state = State.DASH
@@ -280,9 +285,27 @@ func _end_attack() -> void:
 	sword_visual.visible = false
 
 func _on_sword_hit_registered(_target: Hurtbox, hit: HitData) -> void:
+	# Sword hits restore +4 mana!
+	Game.on_sword_hit_connected()
+
 	if current_attack_type == AttackType.DOWN_STRIKE:
 		velocity.y = JUMP_VELOCITY * 0.95
 		can_air_dash = true
+
+func _cast_spell() -> void:
+	if current_state == State.DEAD or current_state == State.HURT:
+		return
+
+	# Costs 15 mana
+	if Game.spend_mana(15.0):
+		var bolt = EMBER_BOLT_SCENE.instantiate()
+		get_parent().add_child(bolt)
+		bolt.global_position = global_position + Vector2(facing_dir * 12.0, 0.0)
+		bolt.setup(facing_dir, 25.0)
+
+		# Small recoil and spark feel
+		velocity.x = -facing_dir * 50.0
+		Juice.screen_shake(1.5)
 
 # ==================== DAMAGE & HEALTH ====================
 

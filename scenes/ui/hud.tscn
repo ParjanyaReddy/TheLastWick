@@ -9,8 +9,15 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fill"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_fill"]
 bg_color = Color(0.85, 0.28, 0.18, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mana_fill"]
+bg_color = Color(0.18, 0.65, 0.95, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
@@ -23,34 +30,59 @@ script = ExtResource("1_hud")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 160.0
-offset_bottom = 28.0
+offset_bottom = 38.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="HPRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="FlameIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="FlameIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/HPRow"]
 custom_minimum_size = Vector2(8, 8)
 layout_mode = 2
 size_flags_vertical = 4
 color = Color(1, 0.85, 0.35, 1)
 
-[node name="HPBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HPBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HPRow"]
 custom_minimum_size = Vector2(80, 8)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/background = SubResource("StyleBoxFlat_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_fill")
+theme_override_styles/fill = SubResource("StyleBoxFlat_hp_fill")
 max_value = 100.0
 value = 100.0
 show_percentage = false
 
-[node name="HPLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HPLabel" type="Label" parent="MarginContainer/VBoxContainer/HPRow"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 8
 text = "100 / 100"
+
+[node name="ManaRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ManaIcon" type="ColorRect" parent="MarginContainer/VBoxContainer/ManaRow"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.35, 0.8, 1, 1)
+
+[node name="ManaBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/ManaRow"]
+custom_minimum_size = Vector2(80, 6)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/background = SubResource("StyleBoxFlat_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_mana_fill")
+max_value = 50.0
+value = 50.0
+show_percentage = false
+
+[node name="ManaLabel" type="Label" parent="MarginContainer/VBoxContainer/ManaRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+text = "50 / 50"
 
 [node name="DeathOverlay" type="Control" parent="."]
 visible = false

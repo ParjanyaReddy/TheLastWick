@@ -14,6 +14,9 @@ var current_state: State = State.PATROL
 var patrol_dir := 1.0
 var state_timer := 0.0
 var target_player: Node2D = null
+var burn_timer := 0.0
+var burn_tick_timer := 0.0
+var burn_dps := 0.0
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -40,6 +43,14 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
+
+	# Process burning DOT
+	if burn_timer > 0.0:
+		burn_timer -= delta
+		burn_tick_timer -= delta
+		if burn_tick_timer <= 0.0:
+			burn_tick_timer = 1.0
+			_take_burn_tick()
 
 	# Look for player if not found
 	if not target_player or not is_instance_valid(target_player):
@@ -160,3 +171,27 @@ func _on_died() -> void:
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector2.ZERO, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	tween.tween_callback(queue_free)
+
+func apply_status(status_name: StringName, duration: float, power: float) -> void:
+	if status_name == &"burn":
+		burn_timer = duration
+		burn_dps = power
+		burn_tick_timer = 0.5
+		sprite.color = Color(1.0, 0.5, 0.1, 1.0)
+
+func _take_burn_tick() -> void:
+	if current_state == State.DEAD:
+		return
+	var hit := HitData.new()
+	hit.damage = burn_dps
+	hit.source = &"burn"
+	health.take_damage(hit)
+
+	var dmg_num = DAMAGE_NUMBER_SCENE.instantiate()
+	get_parent().add_child(dmg_num)
+	dmg_num.global_position = global_position + Vector2(0, -14)
+	dmg_num.setup(burn_dps, false)
+
+	sprite.color = Color(1.0, 0.7, 0.2, 1.0)
+	var tween = create_tween()
+	tween.tween_property(sprite, "color", Color(1.0, 0.5, 0.1, 1.0) if burn_timer > 0 else default_color, 0.15)
