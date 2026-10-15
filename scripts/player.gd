@@ -37,6 +37,7 @@ var dash_cooldown_timer := 0.0
 var dash_dir := 1.0
 var can_air_dash := true
 var dash_started_on_ground := false
+var is_long_jumping := false
 var is_invulnerable := false
 
 # Attack variables
@@ -87,18 +88,19 @@ func _process_normal(delta: float) -> void:
 		if is_on_floor():
 			velocity.x = move_toward(velocity.x, dir * SPEED, ACCEL * delta)
 		else:
-			if sign(velocity.x) == dir and abs(velocity.x) > SPEED:
-				velocity.x = move_toward(velocity.x, dir * SPEED, 160.0 * delta)
+			if is_long_jumping and sign(velocity.x) == dir and abs(velocity.x) > SPEED:
+				velocity.x = move_toward(velocity.x, dir * SPEED, 200.0 * delta)
 			else:
 				velocity.x = move_toward(velocity.x, dir * SPEED, AIR_ACCEL * delta)
 	else:
-		var f := FRICTION if is_on_floor() else 250.0
+		var f := FRICTION if is_on_floor() else 350.0
 		velocity.x = move_toward(velocity.x, 0.0, f * delta)
 
 	# Gravity & floor reset
 	if is_on_floor():
 		coyote = COYOTE_TIME
 		can_air_dash = true
+		is_long_jumping = false
 	else:
 		var g := GRAVITY * (FALL_MULT if velocity.y > 0.0 else 1.0)
 		velocity.y = min(velocity.y + g * delta, MAX_FALL)
@@ -148,6 +150,7 @@ func _process_dash(delta: float) -> void:
 	if jump_buffer > 0.0 and dash_started_on_ground:
 		velocity.y = JUMP_VELOCITY
 		velocity.x = dash_dir * LONG_JUMP_SPEED
+		is_long_jumping = true
 		jump_buffer = 0.0
 		coyote = 0.0
 		_end_dash()
@@ -164,6 +167,8 @@ func _end_dash() -> void:
 	is_invulnerable = false
 	if body_color:
 		body_color.color = Color(0.85, 0.42, 0.18, 1.0)
+	if not is_long_jumping:
+		velocity.x = clamp(velocity.x, -SPEED, SPEED)
 
 # ==================== COMBAT CORE ====================
 
@@ -236,10 +241,9 @@ func _process_attack(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, FRICTION * delta)
 
-	# Last 30% of swing can be cancelled by Dash
-	if attack_timer <= attack_duration * 0.35:
-		attack_can_cancel = true
-		if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
+	# Dash-cancel: Press Dash anytime during an attack to cancel the swing and dash immediately!
+	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
+		if is_on_floor() or can_air_dash:
 			_end_attack()
 			var dir := Input.get_axis("move_left", "move_right")
 			_start_dash(dir)
