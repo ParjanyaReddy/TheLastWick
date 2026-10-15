@@ -1,0 +1,8 @@
+# Git ignore for Godot 4 projects
+.godot/
+*.translation
+export/
+export_presets.cfg
+builds/
+.DS_Store
+Thumbs.db
